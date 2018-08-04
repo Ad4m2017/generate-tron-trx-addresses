@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Tron (TRX) Addresses</title>
+</head>
+<body>
+    <h1>Generate Tron (TRX) Addresses from https://api.tronscan.org</h1>
+    <div style="margin: 15px 0px;">
+        <span>Start index:<input type="text" id="start_index" value="1" /></span> 
+        <span>Rows to generate:<input type="text" id="rows_to_generate" value="5" /></span> 
+        <button id="btn_generate">Generate!</button>
+    </div>
+    <div style="margin: 5px 0px;">Comma Separated Values: Index,Address,Private Key</div>
+    <div><textarea id="addresses" style="width:100%; height: 250px;"></textarea></div>
+    <script type="text/javascript">
+
+        var start_index = 0;
+        var rows_to_generate = 0;
+
+        if (window.XMLHttpRequest) {
+            // code for modern browsers
+            xhttp = new XMLHttpRequest();
+        } else {
+            // code for old IE browsers
+            xhttp = new ActiveXObject('Microsoft.XMLHTTP');
+        }
+
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var obj = JSON.parse(this.responseText);
+                document.getElementById('addresses').innerHTML += start_index + ',"' + obj.address + '","' + obj.key + '"\n';
+               start_index++;
+            }
+        };
+
+        document.getElementById('btn_generate').onclick = function(){
+            document.getElementById('addresses').innerHTML = '';
+            start_index = document.getElementById('start_index').value;
+            rows_to_generate = document.getElementById('rows_to_generate').value;
+            for (i = 0; i < rows_to_generate; i++) {
+                xhttp.open('POST', 'https://api.tronscan.org/api/account', false);
+                xhttp.send();
+            }
+        };
+
+    </script>
+</body>
+</html>
